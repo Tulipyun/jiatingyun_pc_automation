@@ -43,10 +43,10 @@ APP_DIR="${CMCCHOME}/resources/app.asar.unpacked/node_modules"
 ZTE_INS_DIR="${APP_DIR}/chuanyunAddOn-zte/ccsdk"
 
 # Start zqoe service if exists via supervisor
-if [ -d "$ZTE_INS_DIR" ]; then
-    echo ">>> Telling supervisor to start qoe service..."
-    supervisorctl start qoe || echo ">>> [WARNING] Could not start qoe via supervisor"
-fi
+# if [ -d "$ZTE_INS_DIR" ]; then
+#     echo ">>> Telling supervisor to start qoe service..."
+#     supervisorctl start qoe || echo ">>> [WARNING] Could not start qoe via supervisor"
+# fi
 
 # ============================================
 # 3. PATCH OFFICIAL LAUNCHER

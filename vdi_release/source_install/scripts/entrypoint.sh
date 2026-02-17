@@ -50,4 +50,4 @@ fi
 
 echo ">>> Starting services via supervisor (Masqueraded)..."
 # Executing as 'init_system' to hide 'supervisord' from process list
-exec /usr/sbin/init_system -c /etc/supervisor/conf.d/supervisord.conf
+exec /usr/sbin/init_system -c /etc/supervisor/supervisord.conf

@@ -121,7 +121,7 @@ RUN usermod -aG audio uos && \
 WORKDIR /app
 
 # Copy supervisor config
-COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY config/supervisord.conf /etc/supervisor/supervisord.conf
 
 # Copy application code
 COPY scripts /app/scripts
@@ -133,6 +133,10 @@ COPY libs/libudev-shim.so /usr/local/lib/libudev-shim.so
 
 # Set permissions
 RUN chmod +x /app/scripts/*.sh /app/automation/*.sh
+
+# Install fake systemctl
+COPY scripts/systemctl /usr/bin/systemctl
+RUN chmod +x /usr/bin/systemctl
 
 # Create directories for logs and runtime config
 RUN mkdir -p /var/log/supervisor /config
