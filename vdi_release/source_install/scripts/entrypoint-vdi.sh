@@ -39,8 +39,8 @@ for i in {1..30}; do
 done
 
 # Define paths for services
-APP_DIR="${CMCCHOME}/resources/app.asar.unpacked/node_modules"
-ZTE_INS_DIR="${APP_DIR}/chuanyunAddOn-zte/ccsdk"
+# APP_DIR="${CMCCHOME}/resources/app.asar.unpacked/node_modules"
+# ZTE_INS_DIR="${APP_DIR}/chuanyunAddOn-zte/ccsdk"
 
 # Start zqoe service if exists via supervisor
 # if [ -d "$ZTE_INS_DIR" ]; then
