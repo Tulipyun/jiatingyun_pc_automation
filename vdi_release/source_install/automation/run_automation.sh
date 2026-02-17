@@ -15,6 +15,21 @@ done
 echo ">>> 等待 VDI 应用启动..."
 sleep 10
 
-echo ">>> 启动自动化脚本..."
+echo ">>> 启动自动化脚本 (VDI_TYPE: $(hostname))..."
 cd "$(dirname "$0")"
-python3 vdi_automation.py
+
+T=$(hostname)
+case "$T" in
+    jty*)      PY="vdi_automation_jty.py" ;;
+    suzou*)    PY="vdi_automation_suzou.py" ;;
+    hangzhou*) PY="vdi_automation_hangzhou.py" ;;
+    tyy*)      PY="vdi_automation_tyy.py" ;;
+    *)         PY="vdi_automation_jty.py" ;;
+esac
+
+# Fallback to default if specific one doesn't exist
+if [ ! -f "$PY" ]; then
+    PY="vdi_automation_jty.py"
+fi
+
+exec python3 "$PY"

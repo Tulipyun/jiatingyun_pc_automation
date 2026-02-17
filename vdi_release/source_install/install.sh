@@ -46,6 +46,10 @@ E_NOVNC=$(grep "enable_novnc=" "$PRIVATE_CONFIG_DIR/credentials.conf" | cut -d'=
 E_VNC=${E_VNC:-true}
 E_NOVNC=${E_NOVNC:-true}
 
+# V_TYPE=$(grep "vdi_type=" "$PRIVATE_CONFIG_DIR/credentials.conf" | cut -d'=' -f2 | xargs)
+V_TYPE=${V_TYPE:-jty}
+# V_TYPE=${V_TYPE:-suzou}
+
 # 2. Prepare Image
 if [ -f "docker/Dockerfile" ]; then
     echo ">>> Building image from docker/Dockerfile..."
@@ -67,6 +71,7 @@ docker rm -f $CONTAINER_NAME 2>/dev/null || true
 echo ">>> Starting instance $INSTANCE_ID..."
 docker run -d \
     --name $CONTAINER_NAME \
+    -h "$V_TYPE" \
     --restart always \
     --cap-add=NET_ADMIN \
     --cap-add=SYS_ADMIN \
