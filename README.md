@@ -41,7 +41,40 @@ This project sets up a persistent home cloud computer with automatic login, keep
 
 ---
 
-## 🚀 Extras & Advanced Setup (额外配套玩法)
+## � Multi-Account Deployment (多账号部署)
+
+You can run multiple independent cloud computers on a single machine by specifying an Instance ID.
+您可以在同一台机器上运行多个独立的云电脑实例，只需指定实例 ID 即可。
+
+### Usage (使用方法)
+Run the script with a number (0-99) as an argument:
+运行脚本时带上一个数字（0-99）作为参数：
+
+```bash
+# Run Instance 1 (运行实例 1)
+./install.sh 1
+
+# Run Instance 2 (运行实例 2)
+./install.sh 2
+```
+
+### Resource Allocation (资源分配)
+Each instance gets its own configuration folder and ports automatically:
+每个实例会自动分配独立的配置文件夹和端口：
+
+| Instance ID (实例 ID) | Config Folder (配置文件夹) | NoVNC Port (浏览器端口) | VNC Port (VNC 端口) |
+|---|---|---|---|
+| **0** (Default) | `config/config_0` | `6080` | `5900` |
+| **1** | `config/config_1` | `6081` | `5901` |
+| **2** | `config/config_2` | `6082` | `5902` |
+| **N** | `config/config_N` | `6080 + N` | `5900 + N` |
+
+**Note**: Remember to configure the `credentials.conf` in the corresponding `config_x` folder for each instance.
+**注意**：请记得去对应的 `config_x` 文件夹中配置每个实例的 `credentials.conf`。
+
+---
+
+## �🚀 Extras & Advanced Setup (额外配套玩法)
 
 ### EasyTier & RustDesk
 - **EasyTier**: Use Zeabur's free 5G traffic plan to set up an EasyTier server for networking.
