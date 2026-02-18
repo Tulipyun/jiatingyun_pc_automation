@@ -51,14 +51,16 @@ V_TYPE=${V_TYPE:-jty}
 # V_TYPE=${V_TYPE:-suzou}
 
 # 2. Prepare Image
-if [ -f "docker/Dockerfile" ]; then
-    echo ">>> Building image from docker/Dockerfile..."
-    docker build -t uos-gui:latest -f docker/Dockerfile .
-elif [ -f "uos_vdi_image.tar" ]; then
+if [ -f "uos_vdi_image.tar" ]; then
     echo ">>> Loading image from tarball..."
     docker load -i uos_vdi_image.tar
+elif docker image inspect uos-gui:latest >/dev/null 2>&1; then
+    echo ">>> Image uos-gui:latest already exists locally."
+elif [ -f "docker/Dockerfile" ]; then
+    echo ">>> Building image from docker/Dockerfile..."
+    docker build -t uos-gui:latest -f docker/Dockerfile .
 else
-    echo ">>> Error: No Dockerfile or uos_vdi_image.tar found!"
+    echo ">>> Error: No uos_vdi_image.tar, local image, or Dockerfile found!"
     exit 1
 fi
 
