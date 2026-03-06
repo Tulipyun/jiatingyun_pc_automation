@@ -26,3 +26,77 @@ docker run -d \
   -e LANGUAGE=zh_CN:zh \
   -e LC_ALL=zh_CN.UTF-8 \
   uos-gui:latest
+
+
+
+
+重启业务：docker restart uos_instance_0
+
+停止业务：docker stop uos_instance_0
+
+启动业务：docker start uos_instance_0
+
+查看运行状态：docker ps （查看当前正在运行的容器）
+
+查看log：docker logs -f uos_instance_0
+
+四、 实用排查工具箱（Troubleshooting）
+1. 进程与 PID 健康度检查
+
+用于确认系统是否遭遇了“慢性内存/进程泄露”：
+
+    确认大管家是否上岗（输出应为 docker-init 或 tini）：
+    Bash
+
+    docker exec uos_instance_0 ps -p 1
+
+    查看当前容器内存活的进程总数（数值稳定说明无泄露）：
+    Bash
+
+    docker exec uos_instance_0 ps -ef | wc -l
+
+    查看内核分配的最新 PID 流水号（持续变大是正常的）：
+    Bash
+
+    docker exec uos_instance_0 cat /proc/sys/kernel/ns_last_pid
+
+2. “抓现行”高级追踪
+
+当你怀疑有脚本在后台疯狂循环时，使用“连拍”模式抓取短命进程：
+Bash
+
+docker exec -it uos_instance_0 sh -c 'while true; do clear; echo "=== 最新产生的进程 ==="; ps -eo pid,ppid,cmd --sort=start_time | tail -n 8; sleep 0.5; done'
+
+(按 Ctrl+C 退出)
+3. 日志管理与清理
+
+当日志太多无法快速定位新错误时，使用“截断”法清空日志（比直接 rm 更安全）：
+
+    清空特定日志文件（大小归零）：
+    Bash
+
+    docker exec -it uos_instance_0 sh -c "truncate -s 0 /var/log/supervisor/vdi.log"
+
+    实时追踪容器的主控制台报错：
+    Bash
+
+    docker logs -f uos_instance_0
+
+4. 内部服务重启与文件提取
+
+遇到类似 x11vnc 连不上、或者 vdi 假死，不需要重启整个 Docker，可以直接在容器内部操作：
+
+    单独重启某个内部服务（以 vdi 为例）：
+    Bash
+
+    docker exec -it uos_instance_0 supervisorctl restart vdi
+
+    清理 X11/VNC 残留的锁文件（解决 exit status 1 / address in use）：
+    Bash
+
+    docker exec -it uos_instance_0 rm -rf /tmp/.X* /tmp/.vnc/*.pid
+
+    将容器内的文件拷贝到宿主机进行分析：
+    Bash
+
+    docker cp uos_instance_0:/容器内的绝对路径 ./保存到当前目录的文件名
