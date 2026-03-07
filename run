@@ -40,6 +40,10 @@ docker run -d \
 
 查看log：docker logs -f uos_instance_0
 
+docker exec -it  uos_instance_0 df -h
+
+docker exec -it uos_instance_0 free -m
+
 四、 实用排查工具箱（Troubleshooting）
 1. 进程与 PID 健康度检查
 
