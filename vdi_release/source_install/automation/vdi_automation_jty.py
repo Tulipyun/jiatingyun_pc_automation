@@ -120,6 +120,7 @@ class VDIStateMachine:
         self.state_start_time = time.time()
         self.last_action_time = 0    # 追踪最后一次尝试操作的时间
         self.last_connecting_log = 0 # 追踪 CONNECTING 状态的最后一次日志时间
+        self.last_healthy_time = time.time() # 新增：看门狗，记录最后一次正常业务状态的时间
 
     def reload_config(self):
         self.config = load_config()
@@ -649,10 +650,31 @@ class VDIStateMachine:
         logger.error("[ACT] ZOMBIE PROCESS -> KILLING")
         subprocess.call(["pkill", "-9", "-f", "uSmartView"])
 
+    def force_system_reset(self):
+        """连续多次未知状态，执行深度清理并强制退出以触发重启"""
+        logger.error("[FATAL] UNKNOWN state persisted 5 times. Force killing VDI cluster for restart.")
+        # 杀掉所有 CMCC 相关组件和可能的残留
+        # pkill -9 -f "cmcc-jtydn|QoEAgent|usbredirect|chuanyun-redirect|bootCypc|uSmartView"
+        kill_cmd = 'pkill -9 -f "cmcc-jtydn|QoEAgent|uSmartView|usbredirect|chuanyun-redirect|bootCypc"'
+        subprocess.call(kill_cmd, shell=True)
+        # 退出当前脚本，由 supervisor 负责重启
+        sys.exit(1)
+
     # --- ACT (State Handlers) ---
     def monitor_state(self, current_state):
         duration = time.time() - self.state_start_time
         
+        # --- 优雅的看门狗逻辑 ---
+        # 只要不是在“未知”或“僵死”状态，就定义为“健康/有进展”，更新时间戳
+        if current_state not in [State.UNKNOWN, State.ZOMBIE]:
+            self.last_healthy_time = time.time()
+        
+        # 如果超过 120 秒（可调）没进入过任何健康状态，说明环境彻底卡死，触发重置
+        if time.time() - self.last_healthy_time > 120:
+            logger.error(f"[WATCHDOG] Unhealthy for {time.time() - self.last_healthy_time:.0f}s. Triggering reset.")
+            self.force_system_reset()
+
+        # --- 各状态具体处理 ---
         if current_state == State.WAIT:
             self.handle_wait_state(duration)
             return
