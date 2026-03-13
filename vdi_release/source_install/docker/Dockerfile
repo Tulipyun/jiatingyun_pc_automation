@@ -79,6 +79,19 @@ RUN apt-get update && \
     python3-pip \
     iw \
     python3-tk \
+    # VDI 核心解码与重定向依赖 2.18.27版本增加
+    libwebpmux3 \
+    libsnappy1v5 \
+    libzvbi0 \
+    libaom0 \
+    libgsm1 \
+    libshine3 \
+    libx264-155 \
+    libxvidcore4 \
+    libnuma1 \
+    libsdl2-2.0-0 \
+    libjsoncpp1 \
+    libtinyxml2-6a \
     && rm -rf /var/lib/apt/lists/*
 
 # 2.1 Set up Chinese locale
