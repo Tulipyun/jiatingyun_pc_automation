@@ -28,7 +28,7 @@ docker run -d \
   uos-gui:latest
 
 
-
+删除业务：docker rm uos_instance_0
 
 重启业务：docker restart uos_instance_0
 
