@@ -4,7 +4,7 @@ docker run -d \
   --hostname jty \
   --restart always \
   --shm-size 1.5g \
-  --memory 2g \
+  --memory 3g \
   --cap-add NET_ADMIN \
   --cap-add SYS_ADMIN \
   --security-opt seccomp=unconfined \
@@ -21,8 +21,8 @@ docker run -d \
   -v /root/yun/vdi_release/source_install/config/config_0:/config \
   -e LANG=zh_CN.UTF-8 \
   -e TZ=Asia/Shanghai \
-  -e ENABLE_VNC=true \
-  -e ENABLE_NOVNC=true \
+  -e ENABLE_VNC=false \
+  -e ENABLE_NOVNC=false \
   -e LANGUAGE=zh_CN:zh \
   -e LC_ALL=zh_CN.UTF-8 \
   uos-gui:latest
